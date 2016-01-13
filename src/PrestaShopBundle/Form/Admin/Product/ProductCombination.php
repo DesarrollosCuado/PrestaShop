@@ -92,51 +92,36 @@ class ProductCombination extends CommonAbstractType
             'label' => $this->translator->trans('Pre-tax wholesale price', [], 'AdminProducts'),
             'currency' => $this->currency->iso_code,
         ))
-        ->add('attribute_price_impact', 'choice', array(
-            'choices'  => array(
-                '0' => $this->translator->trans('None', [], 'AdminProducts'),
-                '1' => $this->translator->trans('Increase', [], 'AdminProducts'),
-                '-1' => $this->translator->trans('Decrease', [], 'AdminProducts'),
-            ),
-            'required' => true,
-            'label' => $this->translator->trans('Impact on price', [], 'AdminProducts'),
-        ))
         ->add('attribute_price', 'money', array(
             'required' => false,
-            'label' => $this->translator->trans('(tax excl.)', [], 'AdminProducts'),
+            'label' => $this->translator->trans('Impact on price (tax excl.)', [], 'AdminProducts'),
             'currency' => $this->currency->iso_code,
+            'attr' => ['class' => 'attribute_priceTE']
         ))
         ->add('attribute_priceTI', 'money', array(
             'required' => false,
             'mapped' => false,
-            'label' => $this->translator->trans('(tax incl.)', [], 'AdminProducts'),
+            'label' => $this->translator->trans('Impact on price (tax incl.)', [], 'AdminProducts'),
             'currency' => $this->currency->iso_code,
+            'attr' => ['class' => 'attribute_priceTI']
         ))
-        ->add('attribute_weight_impact', 'choice', array(
-            'choices'  => array(
-                '0' => $this->translator->trans('None', [], 'AdminProducts'),
-                '1' => $this->translator->trans('Increase', [], 'AdminProducts'),
-                '-1' => $this->translator->trans('Decrease', [], 'AdminProducts'),
-            ),
-            'required' => true,
-            'label' => $this->translator->trans('Impact on weight', [], 'AdminProducts'),
+        ->add('attribute_ecotax', 'money', array(
+            'required' => false,
+            'label' => $this->translator->trans('Ecotax (tax incl.)', [], 'AdminProducts'),
+            'currency' => $this->currency->iso_code,
+            'constraints' => array(
+                new Assert\NotBlank(),
+                new Assert\Type(array('type' => 'float'))
+            )
         ))
         ->add('attribute_weight', 'number', array(
             'required' => false,
-            'label' => $this->translator->trans($this->configuration->get('PS_WEIGHT_UNIT'), [], 'AdminProducts')
+            'label' => $this->translator->trans('Impact on weight', [], 'AdminProducts')
         ))
-        ->add('attribute_unit_impact', 'choice', array(
-            'choices'  => array(
-                '0' => $this->translator->trans('None', [], 'AdminProducts'),
-                '1' => $this->translator->trans('Increase', [], 'AdminProducts'),
-                '-1' => $this->translator->trans('Decrease', [], 'AdminProducts'),
-            ),
-            'required' => true,
-            'label' => $this->translator->trans('Impact on unit price', [], 'AdminProducts'),
-        ))
-        ->add('attribute_unity', 'number', array(
+        ->add('attribute_unity', 'money', array(
             'required' => false,
-            'label' => $this->translator->trans($this->contextLegacy->currency->sign.'/', [], 'AdminProducts')
+            'label' => $this->translator->trans('Impact on unit price', [], 'AdminProducts'),
+            'currency' => $this->currency->iso_code,
         ))
         ->add('attribute_minimal_quantity', 'number', array(
             'required' => false,
@@ -171,17 +156,6 @@ class ProductCombination extends CommonAbstractType
             'label' => $this->translator->trans('Images', [], 'AdminProducts'),
             'attr' => array('class' => 'images'),
         ));
-
-        //set default minimal values for collection prototype
-        $builder->setData([
-            'attribute_wholesale_price' => 0,
-            'attribute_price' => 0,
-            'attribute_weight' => 0,
-            'attribute_unity' => 0,
-            'attribute_minimal_quantity' => 1,
-            'available_date_attribute' => '0000-00-00',
-            'attribute_quantity' => 0,
-        ]);
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
             $form = $event->getForm();

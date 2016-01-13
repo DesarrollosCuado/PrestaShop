@@ -147,8 +147,10 @@ class ProductQuantity extends CommonAbstractType
                     '1' => $this->translator->trans('Allow orders', [], 'AdminProducts'),
                     '2' => $defaultChoiceLabel,
                 ),
-                'expanded' => false,
-                'required' => true,
+
+                'expanded' => true,
+                'required' => false,
+                'empty_value' => false,
                 'label' => $this->translator->trans('When out of stock', [], 'AdminProducts')
             ));
 
@@ -172,6 +174,7 @@ class ProductQuantity extends CommonAbstractType
                 ),
                 'expanded' => false,
                 'required' => true,
+                'empty_value' => false,
                 'label' => $this->translator->trans('Pack quantities', [], 'AdminProducts')
             ));
         });
